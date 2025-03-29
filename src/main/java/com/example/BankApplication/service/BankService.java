@@ -1,5 +1,6 @@
 package com.example.BankApplication.service;
 
+import com.example.BankApplication.exception.AccountException;
 import com.example.BankApplication.model.Account;
 import com.example.BankApplication.model.Transaction;
 import com.example.BankApplication.repository.AccountRepository;
@@ -23,6 +24,15 @@ public class BankService {
         account.setBalance(0.0);
         return accountRepository.save(account);
     }
+    public Account getAccountBynumber(String number){
+
+        for (Account account:accountRepository.findAll()){
+            if (account.getAccountNumber().equals(number))
+                return account;
+        }
+        throw  new AccountException("nuk  egzsiton");
+
+    }
 
     public void deposit(String accountNumber, double amount) {
         Account account = accountRepository.findByAccountNumber(accountNumber)
@@ -44,7 +54,7 @@ public class BankService {
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         if (account.getBalance() < amount) {
-            throw new RuntimeException("Insufficient funds");
+            throw new AccountException("Insufficient funds");
         }
 
         account.setBalance(account.getBalance() - amount);
@@ -69,21 +79,19 @@ public class BankService {
             throw new RuntimeException("Insufficient funds");
         }
 
-        // Tërheqja nga llogaria e parë
         fromAccount.setBalance(fromAccount.getBalance() - amount);
         Transaction withdrawalTransaction = new Transaction();
         withdrawalTransaction.setAccount(fromAccount);
         withdrawalTransaction.setAmount(amount);
-        withdrawalTransaction.setType("WITHDRAWAL");
+        withdrawalTransaction.setType("Transfer");
         withdrawalTransaction.setDate(new Date());
         transactionRepository.save(withdrawalTransaction);
 
-        // Depozita në llogarinë e dytë
         toAccount.setBalance(toAccount.getBalance() + amount);
         Transaction depositTransaction = new Transaction();
         depositTransaction.setAccount(toAccount);
         depositTransaction.setAmount(amount);
-        depositTransaction.setType("DEPOSIT");
+        depositTransaction.setType("TrasnferFrom:"+fromAccount.getAccountNumber());
         depositTransaction.setDate(new Date());
         transactionRepository.save(depositTransaction);
 
@@ -100,7 +108,9 @@ public class BankService {
     public List<Transaction> getTransactions(String accountNumber) {
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
-        return transactionRepository.findByAccount(account);
+        List<Transaction> transactionList = account.getTransactionList();
+        return transactionList;
     }
+
 }
 

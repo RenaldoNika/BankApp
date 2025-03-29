@@ -4,7 +4,6 @@ import com.example.BankApplication.model.Account;
 import com.example.BankApplication.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
@@ -30,4 +29,9 @@ public class AccountService {
         account.setBalance(newBalance);
         return accountRepository.save(account);
     }
+    public Account getAccount(String account){
+        return accountRepository.findByAccountNumber(account).get();
+    }
+
+
 }

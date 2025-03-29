@@ -1,8 +1,8 @@
 package com.example.BankApplication.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.util.List;
 
 @Entity
@@ -16,6 +16,7 @@ public class Account {
 
     private String accountNumber;
 
+    @JsonIgnore
     private double balance;
 
     public Long getId() {
