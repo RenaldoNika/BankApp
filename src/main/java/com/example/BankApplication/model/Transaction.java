@@ -1,7 +1,7 @@
 package com.example.BankApplication.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.util.Date;
 
 @Entity
@@ -16,6 +16,7 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "account_id")
+    @JsonIgnore
     private Account account;
 
     public Long getId() {

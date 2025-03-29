@@ -100,7 +100,9 @@ public class BankService {
     public List<Transaction> getTransactions(String accountNumber) {
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
-        return transactionRepository.findByAccount(account);
+        List<Transaction> transactionList = account.getTransactionList();
+        return transactionList;
     }
+
 }
 
