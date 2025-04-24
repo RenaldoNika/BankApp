@@ -20,30 +20,30 @@ public class BankService {
     private TransactionRepository transactionRepository;
     private EmailService emailService;
 
-    @Autowired
-    private JavaMailSender mailSender;
 
     @Autowired
     public BankService(AccountRepository accountRepository,
                        TransactionRepository transactionRepository,
-                       EmailService emailService){
-        this.accountRepository=accountRepository;
-        this.emailService=emailService;
-        this.transactionRepository=transactionRepository;
+                       EmailService emailService) {
+        this.accountRepository = accountRepository;
+        this.emailService = emailService;
+        this.transactionRepository = transactionRepository;
     }
+
     public Account createAccount(String accountNumber) {
         Account account = new Account();
         account.setAccountNumber(accountNumber);
         account.setBalance(0.0);
         return accountRepository.save(account);
     }
-    public Account getAccountBynumber(String number){
 
-        for (Account account:accountRepository.findAll()){
+    public Account getAccountBynumber(String number) {
+
+        for (Account account : accountRepository.findAll()) {
             if (account.getAccountNumber().equals(number))
                 return account;
         }
-        throw  new AccountException("nuk  egzsiton");
+        throw new AccountException("nuk  egzsiton");
 
     }
 
@@ -58,22 +58,9 @@ public class BankService {
         transaction.setType("DEPOSIT");
         transaction.setDate(new Date());
 
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom("roniii2017@icloud.com");
-            helper.setTo("kristii.9@icloud.com");
-            helper.setSubject("deposite");
-            helper.setText("llogaria juaj u depositua me "+amount);
-
-            // Dërgo email-in
-            mailSender.send(message);
-
-        } catch (Exception e) {
-
-            System.out.println(e.getMessage());
-        }
+        emailService.sendEmail("redonanika@icloud.com",
+                "banka", "kreditim " + amount
+                + " data:" + new Date());
 
         transactionRepository.save(transaction);
         accountRepository.save(account);
@@ -95,22 +82,10 @@ public class BankService {
         transaction.setType("WITHDRAWAL");
         transaction.setDate(new Date());
 
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
+        emailService.sendEmail("redonanika@icloud.com",
+                "banka", "kreditim " + amount
+                        + " data:" + new Date());
 
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom("roniii2017@icloud.com");
-            helper.setTo("redonanika@icloud.com");
-            helper.setSubject("WITHDRAWAL");
-            helper.setText("llogaria juaj u depitu me "+amount);
-
-            // Dërgo email-in
-            mailSender.send(message);
-
-        } catch (Exception e) {
-
-            System.out.println(e.getMessage());
-        }
 
 
         transactionRepository.save(transaction);
@@ -139,7 +114,7 @@ public class BankService {
         Transaction depositTransaction = new Transaction();
         depositTransaction.setAccount(toAccount);
         depositTransaction.setAmount(amount);
-        depositTransaction.setType("TrasnferFrom:"+fromAccount.getAccountNumber());
+        depositTransaction.setType("TrasnferFrom:" + fromAccount.getAccountNumber());
         depositTransaction.setDate(new Date());
         transactionRepository.save(depositTransaction);
 
