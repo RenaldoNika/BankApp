@@ -16,6 +16,8 @@ public class Account {
 
     private String accountNumber;
 
+    private String email;
+
     @JsonIgnore
     private double balance;
 
@@ -49,5 +51,12 @@ public class Account {
 
     public List<Transaction> getTransactionList() {
         return transactionList;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public String getEmail() {
+        return email;
     }
 }

@@ -5,7 +5,10 @@ import com.example.BankApplication.model.Account;
 import com.example.BankApplication.model.Transaction;
 import com.example.BankApplication.repository.AccountRepository;
 import com.example.BankApplication.repository.TransactionRepository;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
@@ -13,11 +16,21 @@ import java.util.List;
 @Service
 public class BankService {
 
-    @Autowired
     private AccountRepository accountRepository;
-    @Autowired
     private TransactionRepository transactionRepository;
+    private EmailService emailService;
 
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Autowired
+    public BankService(AccountRepository accountRepository,
+                       TransactionRepository transactionRepository,
+                       EmailService emailService){
+        this.accountRepository=accountRepository;
+        this.emailService=emailService;
+        this.transactionRepository=transactionRepository;
+    }
     public Account createAccount(String accountNumber) {
         Account account = new Account();
         account.setAccountNumber(accountNumber);
@@ -45,6 +58,23 @@ public class BankService {
         transaction.setType("DEPOSIT");
         transaction.setDate(new Date());
 
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom("roniii2017@icloud.com");
+            helper.setTo("kristii.9@icloud.com");
+            helper.setSubject("deposite");
+            helper.setText("llogaria juaj u depositua me "+amount);
+
+            // Dërgo email-in
+            mailSender.send(message);
+
+        } catch (Exception e) {
+
+            System.out.println(e.getMessage());
+        }
+
         transactionRepository.save(transaction);
         accountRepository.save(account);
     }
@@ -64,6 +94,24 @@ public class BankService {
         transaction.setAmount(amount);
         transaction.setType("WITHDRAWAL");
         transaction.setDate(new Date());
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom("roniii2017@icloud.com");
+            helper.setTo("redonanika@icloud.com");
+            helper.setSubject("WITHDRAWAL");
+            helper.setText("llogaria juaj u depitu me "+amount);
+
+            // Dërgo email-in
+            mailSender.send(message);
+
+        } catch (Exception e) {
+
+            System.out.println(e.getMessage());
+        }
+
 
         transactionRepository.save(transaction);
         accountRepository.save(account);
