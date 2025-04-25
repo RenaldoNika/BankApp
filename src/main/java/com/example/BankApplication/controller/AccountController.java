@@ -4,8 +4,6 @@ import com.example.BankApplication.model.Account;
 import com.example.BankApplication.model.Transaction;
 import com.example.BankApplication.service.AccountService;
 import com.example.BankApplication.service.BankService;
-import com.example.BankApplication.service.EmailService;
-import com.example.BankApplication.service.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
