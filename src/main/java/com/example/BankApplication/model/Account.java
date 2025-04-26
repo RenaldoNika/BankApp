@@ -3,10 +3,15 @@ package com.example.BankApplication.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Entity
 public class Account {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -14,13 +19,19 @@ public class Account {
     @OneToMany(mappedBy = "account")
     private List<Transaction> transactionList;
 
+
+    @ManyToOne
+    private User user;
+
+
+    @JsonIgnore
     private String accountNumber;
 
 
-    private String email;
-
     @JsonIgnore
     private double balance;
+
+    private static final AtomicInteger counter = new AtomicInteger(1000);
 
     public Long getId() {
         return id;
@@ -54,10 +65,19 @@ public class Account {
         return transactionList;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+
+    @PrePersist
+    public void generateAccountNumber() {
+        String datePart = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        int uniquePart = counter.getAndIncrement();
+        this.accountNumber = datePart + uniquePart;
     }
-    public String getEmail() {
-        return email;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

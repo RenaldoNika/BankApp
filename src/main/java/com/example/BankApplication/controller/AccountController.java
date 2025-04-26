@@ -45,7 +45,6 @@ public class AccountController {
     }
 
 
-
     @GetMapping("/{id}")
     public Optional<Account> getAccount(@PathVariable Long id) {
         return accountService.getAccount(id);

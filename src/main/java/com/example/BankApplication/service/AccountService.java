@@ -3,7 +3,9 @@ package com.example.BankApplication.service;
 import com.example.BankApplication.model.Account;
 import com.example.BankApplication.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service
@@ -12,8 +14,9 @@ public class AccountService {
     private AccountRepository accountRepository;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository){
-        this.accountRepository=accountRepository;
+    public AccountService(AccountRepository accountRepository,
+                          PasswordEncoder passwordEncoder) {
+        this.accountRepository = accountRepository;
     }
 
 
@@ -31,7 +34,8 @@ public class AccountService {
         account.setBalance(newBalance);
         return accountRepository.save(account);
     }
-    public Account getAccount(String account){
+
+    public Account getAccount(String account) {
         return accountRepository.findByAccountNumber(account).get();
     }
 
