@@ -9,6 +9,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Collection;
 
 
 @Component
@@ -20,13 +21,18 @@ public class UserAuthenticationSuccesHandler implements AuthenticationSuccessHan
                                         Authentication authentication)
             throws IOException, ServletException {
 
-        for (GrantedAuthority a : authentication.getAuthorities()) {
-            if ("".equals(a.getAuthority())) {
+
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+        for (GrantedAuthority authority : authorities) {
+            String role = authority.getAuthority();
+
+            if (role.equals("ROLE_USER")) {
                 response.sendRedirect("/mybank/home");
-                System.out.println(a.getAuthority());
                 return;
             }
         }
+
         response.sendRedirect("/mybank/home");
     }
 

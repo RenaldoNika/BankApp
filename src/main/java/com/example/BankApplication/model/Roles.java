@@ -1,5 +1,5 @@
 package com.example.BankApplication.model;
 
-public enum EnumUser {
-    USER
+public enum Roles {
+    user
 }

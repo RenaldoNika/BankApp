@@ -1,6 +1,7 @@
 package com.example.BankApplication.model;
 
 import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +13,10 @@ public class User {
     private Long id;
 
 
+    Roles roles;
+
     @OneToMany(mappedBy = "user")
-    List<Account> accountList=new ArrayList<>();
+    List<Account> accountList = new ArrayList<>();
 
     private String email;
 
@@ -37,5 +40,13 @@ public class User {
 
     public Long getId() {
         return id;
+    }
+
+
+    @PrePersist
+    public void assignDefaultRole() {
+        if (roles == null) {
+            roles = Roles.user;
+        }
     }
 }
