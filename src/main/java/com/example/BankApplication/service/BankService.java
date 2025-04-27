@@ -5,10 +5,7 @@ import com.example.BankApplication.model.Account;
 import com.example.BankApplication.model.Transaction;
 import com.example.BankApplication.repository.AccountRepository;
 import com.example.BankApplication.repository.TransactionRepository;
-import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +45,7 @@ public class BankService {
     }
 
     public void deposit(String accountNumber, double amount) {
+
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         account.setBalance(account.getBalance() + amount);

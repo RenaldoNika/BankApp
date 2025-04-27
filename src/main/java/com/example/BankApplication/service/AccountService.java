@@ -20,9 +20,7 @@ public class AccountService {
     }
 
 
-    public Account createAccount(Account account) {
-        return accountRepository.save(account);
-    }
+
 
     public Optional<Account> getAccount(Long id) {
         return accountRepository.findById(id);

@@ -39,10 +39,6 @@ public class AccountController {
         return accountService.getAccount(account);
     }
 
-    @PostMapping("/create")
-    public Account createAccount(@RequestBody Account account) {
-        return accountService.createAccount(account);
-    }
 
 
     @GetMapping("/{id}")
