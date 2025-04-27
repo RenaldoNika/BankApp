@@ -1,5 +1,6 @@
 package com.example.BankApplication.service;
 
+import com.example.BankApplication.exception.UserException;
 import com.example.BankApplication.model.Account;
 import com.example.BankApplication.model.User;
 import com.example.BankApplication.repository.AccountRepository;
@@ -31,17 +32,19 @@ public class UserService {
     }
 
     public User registerUser(User user) {
+
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new UserException("Ky email është tashmë i përdorur.");
+        }
         String passowrdEncdoder = passwordEncoder.encode(user.getPassword());
 
         user.setPassword(passowrdEncdoder);
         User savedUser = userRepository.save(user);
 
-
         Account account = new Account();
         account.setUser(savedUser);
         account.setBalance(0.0);
         accountRepository.save(account);
-
         return user;
     }
 }
