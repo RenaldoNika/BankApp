@@ -70,7 +70,7 @@ public class BankService {
         transaction.setType("DEPOSIT");
         transaction.setDate(new Date());
 
-        emailService.sendEmail("redonanika@icloud.com",
+        emailService.sendEmail(email,
                 "banka", "kreditim " + amount
                         + " data:" + new Date());
 
