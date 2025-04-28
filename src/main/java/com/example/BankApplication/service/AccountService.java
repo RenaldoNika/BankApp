@@ -20,8 +20,6 @@ public class AccountService {
     }
 
 
-
-
     public Optional<Account> getAccount(Long id) {
         return accountRepository.findById(id);
     }

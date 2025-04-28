@@ -3,17 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <title>My Bank</title>
-
-  <h1>Welcome to MYBANK</h1>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            font-size: 36px;
+            color: #333;
+        }
+        .balance-container {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        form {
+            display: inline-block;
+            margin: 10px;
+        }
+    </style>
 </head>
 <body>
-<form th:action="@{/mybank/transkasione}" method="post">
+
+<h1>Welcome to MYBANK</h1>
+
+<form th:action="@{/mybank/transaction}" method="get">
     <button type="submit">Shiko Transaksionet</button>
 </form>
 
-
-</body><form th:action="@{/mybank/transfero}" method="post">
+<form th:action="@{/mybank/transfero}" method="post">
     <button type="submit">Transfero Para</button>
 </form>
+
+<h1>Balanca e Bankës</h1>
+
+<div class="balance-container">
+    <strong th:text="${balance}">0.00</strong> EUR
+</div>
+
 </body>
 </html>

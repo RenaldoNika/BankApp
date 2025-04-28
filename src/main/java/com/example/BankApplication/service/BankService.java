@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -140,21 +141,28 @@ public class BankService {
         emailService.sendEmail(user.getEmail(),
                 "Banka", "Kreditim prej "
                         + amount + " në llogarinë tuaj. Data: "
+                        + "nga llogaria " + userFrom.getEmail()
                         + new Date());
     }
 
 
-    public double getBalance(String accountNumber) {
-        Account account = accountRepository.findByAccountNumber(accountNumber)
+    public double getBalance() {
+        User userLogin = dtoUserContextSpringHolder.getCurrentUser();
+
+
+        Account account = accountRepository.findByAccountNumber(userLogin.getAccountList().get(0).getAccountNumber())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         return account.getBalance();
     }
 
-    public List<Transaction> getTransactions(String accountNumber) {
-        Account account = accountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
-        List<Transaction> transactionList = account.getTransactionList();
-        return transactionList;
+    public List<Transaction> getTransactions() {
+        User userLogin = dtoUserContextSpringHolder.getCurrentUser();
+        Account account = userLogin.getAccountList().get(0);
+        Account fullAccount = accountRepository.findByAccountNumber(account.getAccountNumber()).get();
+        if (fullAccount == null) {
+            throw new RuntimeException("Account not found");
+        }
+        return fullAccount.getTransactionList();
     }
 
 }

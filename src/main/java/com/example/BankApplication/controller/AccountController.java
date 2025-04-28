@@ -8,14 +8,15 @@ import com.example.BankApplication.service.AccountService;
 import com.example.BankApplication.service.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping("/accounts")
 public class AccountController {
 
@@ -62,31 +63,13 @@ public class AccountController {
         return accountService.updateBalance(id, newBalance);
     }
 
-    @GetMapping("/transaction")
-    private String getTransaction(Model model) {
-        User user = dtoUserContextSpringHolder.getCurrentUser();
-
-        List<Transaction> allTransactions = new ArrayList<>();
-
-        for (Account account : user.getAccountList()) {
-            allTransactions.addAll(account.getTransactionList());
-        }
-        model.addAttribute("transactions", allTransactions);
-        return "transactionList";
-    }
-
-
-    @GetMapping("/balance/{account}")
-    private double getBalance(@PathVariable String account) {
-        return bankService.getBalance(account);
-    }
 
     @PostMapping("/transfer")
     public String transfer(@RequestParam("llogari2") String llogari2,
                            @RequestParam("shuma") double shuma) {
         bankService.transfer(llogari2, shuma);
 
-        return "redirect:/transferoPara";
+        return "redirect:/mybank/home";
 
     }
 }

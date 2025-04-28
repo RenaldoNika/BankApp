@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Transfero Para</title>
+</head>
+<body>
+
+<h1>Transfero Para</h1>
+<form action="#" th:action="@{/accounts/transfer}" method="post">
+    <label for="llogari2">Llogaria Destinacion:</label>
+    <input type="text" id="llogari2" name="llogari2" required="required" />
+
+    <label for="shuma">Shuma për transferim:</label>
+    <input type="number" id="shuma" name="shuma" required="required" />
+
+    <button type="submit">Transfero</button>
+</form>
+
+</body>
+</html>

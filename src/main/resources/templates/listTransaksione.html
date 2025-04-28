@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista e Transaksioneve</title>
+</head>
+<body>
+<h1>Lista e Transaksioneve</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Data</th>
+        <th>Shuma</th>
+        <th>Përshkrimi</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="trans : ${transactions}">
+        <td th:text="${trans.date}"></td>
+        <td th:text="${trans.amount}"></td>
+        <td th:text="${trans.type}">Përshkrimi këtu</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
