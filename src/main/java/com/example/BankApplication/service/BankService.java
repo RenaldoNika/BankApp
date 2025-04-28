@@ -11,8 +11,6 @@ import com.example.BankApplication.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -122,7 +120,7 @@ public class BankService {
         Transaction withdrawalTransaction = new Transaction();
         withdrawalTransaction.setAccount(accountFrom);
         withdrawalTransaction.setAmount(amount);
-        withdrawalTransaction.setType("Transfer");
+        withdrawalTransaction.setType("Transfer "+" TO: "+toAccountNumber);
         withdrawalTransaction.setDate(new Date());
         transactionRepository.save(withdrawalTransaction);
 
@@ -148,8 +146,6 @@ public class BankService {
 
     public double getBalance() {
         User userLogin = dtoUserContextSpringHolder.getCurrentUser();
-
-
         Account account = accountRepository.findByAccountNumber(userLogin.getAccountList().get(0).getAccountNumber())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         return account.getBalance();
