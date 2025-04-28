@@ -12,7 +12,7 @@ public class Transaction {
     private Long id;
     private Date date;
     private double amount;
-    private String type; // "DEPOSIT" ose "WITHDRAWAL"
+    private String type;
 
     @ManyToOne
     @JoinColumn(name = "account_id")
@@ -58,6 +58,7 @@ public class Transaction {
     public void setAccount(Account account) {
         this.account = account;
     }
+
 }
 
 

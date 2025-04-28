@@ -2,11 +2,16 @@ package com.example.BankApplication.service;
 
 import com.example.BankApplication.exception.AccountException;
 import com.example.BankApplication.model.Account;
+import com.example.BankApplication.model.DtoUserContextSpringHolder;
 import com.example.BankApplication.model.Transaction;
+import com.example.BankApplication.model.User;
 import com.example.BankApplication.repository.AccountRepository;
 import com.example.BankApplication.repository.TransactionRepository;
+import com.example.BankApplication.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.List;
 
@@ -16,15 +21,21 @@ public class BankService {
     private AccountRepository accountRepository;
     private TransactionRepository transactionRepository;
     private EmailService emailService;
+    private UserRepository userRepository;
+    private DtoUserContextSpringHolder dtoUserContextSpringHolder;
 
 
     @Autowired
     public BankService(AccountRepository accountRepository,
+                       DtoUserContextSpringHolder dtoUserContextSpringHolder,
+                       UserRepository userRepository,
                        TransactionRepository transactionRepository,
                        EmailService emailService) {
         this.accountRepository = accountRepository;
         this.emailService = emailService;
         this.transactionRepository = transactionRepository;
+        this.userRepository = userRepository;
+        this.dtoUserContextSpringHolder = dtoUserContextSpringHolder;
     }
 
     public Account createAccount(String accountNumber) {
@@ -46,6 +57,10 @@ public class BankService {
 
     public void deposit(String accountNumber, double amount) {
 
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userRepository.findByEmail(email).get();
+
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         account.setBalance(account.getBalance() + amount);
@@ -58,7 +73,7 @@ public class BankService {
 
         emailService.sendEmail("redonanika@icloud.com",
                 "banka", "kreditim " + amount
-                + " data:" + new Date());
+                        + " data:" + new Date());
 
         transactionRepository.save(transaction);
         accountRepository.save(account);
@@ -85,24 +100,26 @@ public class BankService {
                         + " data:" + new Date());
 
 
-
         transactionRepository.save(transaction);
         accountRepository.save(account);
     }
 
-    public void transfer(String fromAccountNumber, String toAccountNumber, double amount) {
-        Account fromAccount = accountRepository.findByAccountNumber(fromAccountNumber)
-                .orElseThrow(() -> new RuntimeException("From Account not found"));
+    public void transfer(String toAccountNumber, double amount) {
+
+        User userFrom = dtoUserContextSpringHolder.getCurrentUser();
+        Account accountFrom = userFrom.getAccountList().get(0);
+
+        double shumafrom = accountFrom.getBalance();
+
         Account toAccount = accountRepository.findByAccountNumber(toAccountNumber)
                 .orElseThrow(() -> new RuntimeException("To Account not found"));
-
-        if (fromAccount.getBalance() < amount) {
+        if (shumafrom < amount) {
             throw new RuntimeException("Insufficient funds");
         }
 
-        fromAccount.setBalance(fromAccount.getBalance() - amount);
+        accountFrom.setBalance(accountFrom.getBalance() - amount);
         Transaction withdrawalTransaction = new Transaction();
-        withdrawalTransaction.setAccount(fromAccount);
+        withdrawalTransaction.setAccount(accountFrom);
         withdrawalTransaction.setAmount(amount);
         withdrawalTransaction.setType("Transfer");
         withdrawalTransaction.setDate(new Date());
@@ -112,13 +129,20 @@ public class BankService {
         Transaction depositTransaction = new Transaction();
         depositTransaction.setAccount(toAccount);
         depositTransaction.setAmount(amount);
-        depositTransaction.setType("TrasnferFrom:" + fromAccount.getAccountNumber());
+        depositTransaction.setType("TransferFrom:" + accountFrom.getAccountNumber());
         depositTransaction.setDate(new Date());
         transactionRepository.save(depositTransaction);
 
-        accountRepository.save(fromAccount);
+        accountRepository.save(accountFrom);
         accountRepository.save(toAccount);
+
+        User user = userRepository.findByAccountNumber(toAccountNumber);
+        emailService.sendEmail(user.getEmail(),
+                "Banka", "Kreditim prej "
+                        + amount + " në llogarinë tuaj. Data: "
+                        + new Date());
     }
+
 
     public double getBalance(String accountNumber) {
         Account account = accountRepository.findByAccountNumber(accountNumber)

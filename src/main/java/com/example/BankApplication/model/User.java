@@ -49,4 +49,9 @@ public class User {
             roles = Roles.user;
         }
     }
+
+
+    public List<Account> getAccountList() {
+        return accountList;
+    }
 }

@@ -29,6 +29,7 @@ public class SecurityConfiguration {
         httpSecurity.csrf(c -> c.disable())
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/mybank/home/**").hasRole("USER")
+                        .requestMatchers("/accounts/**").hasRole("USER")
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -41,7 +42,6 @@ public class SecurityConfiguration {
 
 
         return httpSecurity.build();
-
 
     }
 
