@@ -1,8 +1,11 @@
 package com.example.BankApplication.configuration;
 
+import com.example.BankApplication.jwt.JwtGenerated;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -14,25 +17,43 @@ import java.util.Collection;
 @Component
 public class UserAuthenticationSuccesHandler implements AuthenticationSuccessHandler {
 
+
+    private final JwtGenerated generateToken;
+
+    @Autowired
+    public UserAuthenticationSuccesHandler(JwtGenerated jwtGenerated) {
+        this.generateToken = jwtGenerated;
+    }
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication)
             throws IOException, ServletException {
 
+        String username = authentication.getName();
+        String token = generateToken.generateToken(username);
 
+        // Shto tokenin në një cookie
+        Cookie cookie = new Cookie("token", token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(24 * 60 * 60); // 1 ditë
+        response.addCookie(cookie);
+
+        // Opsionale: Mund të shtosh gjithashtu edhe në header
+        response.setHeader("Authorization", "Bearer " + token);
+
+        // Ridrejto bazuar në rolin e përdoruesit
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-
         for (GrantedAuthority authority : authorities) {
-            String role = authority.getAuthority();
-
-            if (role.equals("ROLE_USER")) {
+            if ("ROLE_USER".equals(authority.getAuthority())) {
                 response.sendRedirect("/mybank/home");
                 return;
             }
         }
 
+        // Ridrejto default nëse nuk ka rol të caktuar
         response.sendRedirect("/mybank/home");
     }
-
 }

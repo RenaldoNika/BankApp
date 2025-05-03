@@ -51,6 +51,10 @@ public class User {
     }
 
 
+    public Roles getRoles() {
+        return roles;
+    }
+
     public List<Account> getAccountList() {
         return accountList;
     }

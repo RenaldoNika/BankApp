@@ -68,6 +68,7 @@ public class BankService {
         transaction.setAccount(account);
         transaction.setAmount(amount);
         transaction.setType("DEPOSIT");
+
         transaction.setDate(new Date());
 
         emailService.sendEmail(email,
@@ -113,7 +114,7 @@ public class BankService {
         Account toAccount = accountRepository.findByAccountNumber(toAccountNumber)
                 .orElseThrow(() -> new RuntimeException("To Account not found"));
         if (shumafrom < amount) {
-            throw new RuntimeException("Insufficient funds");
+            throw new AccountException("Insufficient funds");
         }
 
         accountFrom.setBalance(accountFrom.getBalance() - amount);

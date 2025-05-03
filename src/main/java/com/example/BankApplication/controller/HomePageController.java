@@ -1,16 +1,20 @@
 package com.example.BankApplication.controller;
 
+import com.example.BankApplication.jwt.JwtGenerated;
 import com.example.BankApplication.model.Account;
 import com.example.BankApplication.model.DtoUserContextSpringHolder;
 import com.example.BankApplication.model.Transaction;
 import com.example.BankApplication.model.User;
 import com.example.BankApplication.service.BankService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,17 +24,56 @@ public class HomePageController {
 
     private BankService bankService;
     private DtoUserContextSpringHolder dtoUserContextSpringHolder;
+    private JwtGenerated jwtGenerated;
+
+    @ResponseBody
+    @GetMapping("/auth/token")
+    public String getToken() {
+        org.springframework.security.core.Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Përdoruesi nuk është i autentikuar");
+        }
+        String username = authentication.getName();
+
+
+        System.out.println(jwtGenerated.generateToken(username));
+
+        return jwtGenerated.generateToken(username);
+
+    }
 
     @Autowired
     public HomePageController(BankService bankService,
+                              JwtGenerated jwtGenerated,
                               DtoUserContextSpringHolder dtoUserContextSpringHolder) {
+        this.jwtGenerated = jwtGenerated;
         this.bankService = bankService;
-        this.dtoUserContextSpringHolder=dtoUserContextSpringHolder;
+        this.dtoUserContextSpringHolder = dtoUserContextSpringHolder;
+    }
+
+    @PostMapping("/some-endpoint")
+    @ResponseBody
+    public String getRequestHeaders(@RequestBody String requestBody, HttpServletRequest request) {
+        String contentType = request.getHeader("Content-Type");
+        return "Content-Type: " + contentType + ", Body: " + requestBody;
     }
 
     @GetMapping("/home")
-    public String homePage(Model model) {
-        model.addAttribute("balance",bankService.getBalance());
+    public String homePage(Model model, @CookieValue(value = "token", required = false) String token) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Përdoruesi nuk është i autentikuar");
+        }
+        String username = authentication.getName();
+
+        if (token != null) {
+            System.out.println("Tokeni i përdoruesit (nga cookie): " + token);
+        } else {
+            System.out.println("Tokeni nuk u gjet në cookie.");
+        }
+        System.out.println("emri i user" + username);
+
+        model.addAttribute("balance", bankService.getBalance());
         return "home";
     }
 
