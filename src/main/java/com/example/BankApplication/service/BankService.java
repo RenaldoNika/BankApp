@@ -68,6 +68,7 @@ public class BankService {
         transaction.setAccount(account);
         transaction.setAmount(amount);
         transaction.setType("DEPOSIT");
+
         transaction.setDate(new Date());
 
         emailService.sendEmail(email,

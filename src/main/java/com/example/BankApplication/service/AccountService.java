@@ -23,7 +23,12 @@ public class AccountService {
     public Optional<Account> getAccount(Long id) {
         return accountRepository.findById(id);
     }
-    
+    public Account updateBalance(Long id, double newBalance) {
+        Account account = accountRepository.findById(id).orElseThrow(()
+                -> new RuntimeException("Account not found"));
+        account.setBalance(newBalance);
+        return accountRepository.save(account);
+    }
 
     public Account getAccount(String account) {
         return accountRepository.findByAccountNumber(account).get();

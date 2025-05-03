@@ -20,9 +20,7 @@ public class UserAuthenticationSuccesHandler implements AuthenticationSuccessHan
                                         Authentication authentication)
             throws IOException, ServletException {
 
-
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-
         for (GrantedAuthority authority : authorities) {
             String role = authority.getAuthority();
 
@@ -31,8 +29,9 @@ public class UserAuthenticationSuccesHandler implements AuthenticationSuccessHan
                 return;
             }
         }
-
         response.sendRedirect("/mybank/home");
     }
+
+
 
 }
