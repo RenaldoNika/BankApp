@@ -41,8 +41,8 @@ public class UserAuthenticationSuccesHandler implements AuthenticationSuccessHan
         cookie.setMaxAge(24 * 60 * 60); // 1 ditë
         response.addCookie(cookie);
 
-        // Opsionale: Mund të shtosh gjithashtu edhe në header
-        response.setHeader("Authorization", "Bearer " + token);
+
+
 
         // Ridrejto bazuar në rolin e përdoruesit
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
