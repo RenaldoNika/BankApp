@@ -59,17 +59,19 @@ public class HomePageController {
     }
 
     @GetMapping("/home")
-    public String homePage(Model model, @CookieValue(value = "token", required = false) String token) {
+    public String homePage(Model model, HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new RuntimeException("Përdoruesi nuk është i autentikuar");
         }
         String username = authentication.getName();
 
-        if (token != null) {
-            System.out.println("Tokeni i përdoruesit (nga cookie): " + token);
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7); // heq "Bearer " dhe merr vetëm token-in
+            System.out.println("Tokeni i përdoruesit nga header: " + token);
         } else {
-            System.out.println("Tokeni nuk u gjet në cookie.");
+            System.out.println("Nuk u gjet token në header.");
         }
         System.out.println("emri i user" + username);
 

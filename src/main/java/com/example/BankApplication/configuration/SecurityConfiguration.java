@@ -16,7 +16,7 @@ public class SecurityConfiguration {
 
 
     private UserAuthenticationSuccesHandler userAuthenticationSuccesHandler;
-    private  JwtGenerated jwtGenerated;
+    private JwtGenerated jwtGenerated;
     private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
