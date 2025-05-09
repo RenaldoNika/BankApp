@@ -34,10 +34,7 @@ public class HomePageController {
             throw new RuntimeException("Përdoruesi nuk është i autentikuar");
         }
         String username = authentication.getName();
-
-
         System.out.println(jwtGenerated.generateToken(username));
-
         return jwtGenerated.generateToken(username);
 
     }
@@ -54,9 +51,10 @@ public class HomePageController {
     @PostMapping("/some-endpoint")
     @ResponseBody
     public String getRequestHeaders(@RequestBody String requestBody, HttpServletRequest request) {
-        String contentType = request.getHeader("Content-Type");
+        String contentType = request.getHeader("Accept");
         return "Content-Type: " + contentType + ", Body: " + requestBody;
     }
+
 
     @GetMapping("/home")
     public String homePage(Model model, HttpServletRequest request) {
