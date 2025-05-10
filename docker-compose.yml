@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: shkoder2023
+      MYSQL_DATABASE: bankApp
+      MYSQL_USER: root
+      MYSQL_PASSWORD: shkoder2023
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+
+  spring-boot-app:
+    build: .
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/bankApp
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: shkoder2023
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
