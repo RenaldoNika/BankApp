@@ -34,17 +34,12 @@ public class UserAuthenticationSuccesHandler implements AuthenticationSuccessHan
         String username = authentication.getName();
         String token = generateToken.generateToken(username);
 
-        // Shto tokenin në një cookie
         Cookie cookie = new Cookie("token", token);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(24 * 60 * 60); // 1 ditë
         response.addCookie(cookie);
 
-        // Opsionale: Mund të shtosh gjithashtu edhe në header
-        response.setHeader("Authorization", "Bearer " + token);
-
-        // Ridrejto bazuar në rolin e përdoruesit
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (GrantedAuthority authority : authorities) {
             if ("ROLE_USER".equals(authority.getAuthority())) {
@@ -52,8 +47,6 @@ public class UserAuthenticationSuccesHandler implements AuthenticationSuccessHan
                 return;
             }
         }
-
-        // Ridrejto default nëse nuk ka rol të caktuar
-        response.sendRedirect("/mybank/home");
+        response.sendRedirect("a");
     }
 }

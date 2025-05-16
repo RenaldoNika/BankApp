@@ -80,6 +80,9 @@ public class BankService {
     }
 
     public void withdraw(String accountNumber, double amount) {
+
+        User userFrom = dtoUserContextSpringHolder.getCurrentUser();
+
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
@@ -95,7 +98,7 @@ public class BankService {
         transaction.setType("WITHDRAWAL");
         transaction.setDate(new Date());
 
-        emailService.sendEmail("redonanika@icloud.com",
+        emailService.sendEmail(userFrom.getEmail(),
                 "banka", "kreditim " + amount
                         + " data:" + new Date());
 

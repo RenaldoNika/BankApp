@@ -3,18 +3,20 @@ package com.example.BankApplication.jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
+
 import java.util.Date;
 
 @Component
 public class JwtGenerated {
 
     private String secretKey = "sekretiJuajassssssssssssssssssssssssssssssssssssssssssssssss";
+    private long refreshTokenExpiration = 1000 * 60 * 60 * 24 * 7; // 1 week
 
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
@@ -41,6 +43,16 @@ public class JwtGenerated {
     }
 
     public boolean validateToken(String token, String username) {
+        System.out.println("Token: " + token);
+        System.out.println("Username: " + username);
+        System.out.println("Username nga tokeni: " + extractUsername(token));
+        System.out.println("Token i skaduar? " + isTokenExpired(token));
+
         return (username.equals(extractUsername(token)) && !isTokenExpired(token));
+    }
+
+
+    public boolean validateTokenWithToken(String token) {
+        return (isTokenExpired(token));
     }
 }

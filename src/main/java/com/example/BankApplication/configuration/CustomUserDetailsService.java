@@ -1,6 +1,5 @@
 package com.example.BankApplication.configuration;
 
-import com.example.BankApplication.exception.UserException;
 import com.example.BankApplication.model.User;
 import com.example.BankApplication.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

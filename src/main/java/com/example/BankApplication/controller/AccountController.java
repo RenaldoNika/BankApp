@@ -34,7 +34,7 @@ public class AccountController {
         this.dtoUserContextSpringHolder = dtoUserContextSpringHolder;
     }
 
-    @PostMapping("deposit/{account}")
+    @PostMapping("/deposit/{account}")
     public ResponseEntity<?> deposit(@PathVariable("account") String account,
                                      @RequestParam("sum") double sum) {
         bankService.deposit(account, sum);

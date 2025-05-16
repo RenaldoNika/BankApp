@@ -6,8 +6,8 @@ import com.example.BankApplication.model.DtoUserContextSpringHolder;
 import com.example.BankApplication.model.Transaction;
 import com.example.BankApplication.model.User;
 import com.example.BankApplication.service.BankService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,14 +64,23 @@ public class HomePageController {
         }
         String username = authentication.getName();
 
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7); // heq "Bearer " dhe merr vetëm token-in
-            System.out.println("Tokeni i përdoruesit nga header: " + token);
-        } else {
-            System.out.println("Nuk u gjet token në header.");
+        Cookie[] cookies = request.getCookies();
+        String token = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("token".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
         }
-        System.out.println("emri i user" + username);
+        if (token != null) {
+            System.out.println("Tokeni i përdoruesit nga cookie: " + token);
+        } else {
+            System.out.println("Nuk u gjet token në cookie.");
+        }
+
+        System.out.println("Emri i përdoruesit: " + username);
 
         model.addAttribute("balance", bankService.getBalance());
         return "home";
