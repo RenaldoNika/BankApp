@@ -2,8 +2,6 @@ package com.example.BankApplication.controller;
 
 import com.example.BankApplication.model.Account;
 import com.example.BankApplication.model.DtoUserContextSpringHolder;
-import com.example.BankApplication.model.Transaction;
-import com.example.BankApplication.model.User;
 import com.example.BankApplication.service.AccountService;
 import com.example.BankApplication.service.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Controller

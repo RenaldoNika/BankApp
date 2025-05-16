@@ -15,8 +15,6 @@ public class DtoUserContextSpringHolder {
     private UserRepository userRepository;
 
 
-
-
     public User getCurrentUser(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
