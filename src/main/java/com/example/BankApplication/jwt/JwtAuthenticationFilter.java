@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
@@ -26,10 +27,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-
-        System.out.println("Filter u thirr");
-
-
         String token = null;
 
         Cookie[] cookies = request.getCookies();
@@ -45,14 +42,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         System.out.println("Cookies: " + Arrays.toString(request.getCookies()));
 
-
         if (token != null) {
             try {
                 System.out.println("Token: " + token);
+
+                if (jwtUtil.isTokenExpired(token)) {
+                    System.out.println("Tokeni ka skaduar!");
+                    SecurityContextHolder.clearContext();
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Token has expired.");
+                    return;
+                }
+
                 String username = jwtUtil.extractUsername(token);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     if (jwtUtil.validateToken(token, username)) {
+
 
                         UsernamePasswordAuthenticationToken authentication =
                                 new UsernamePasswordAuthenticationToken(username,
@@ -62,21 +68,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                         System.out.println("User authenticated: " + username);
                     } else {
+                        SecurityContextHolder.clearContext();
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         response.getWriter().write("Invalid or expired token.");
                         return;
                     }
                 }
             } catch (Exception e) {
-                SecurityContextHolder.clearContext();
                 System.out.println("Error: " + e.getMessage());
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Error during token verification: " + e.getMessage());
                 return;
             }
         }
-
-
         filterChain.doFilter(request, response);
     }
 

@@ -10,7 +10,7 @@ import java.util.Date;
 public class JwtGenerated {
 
     private String secretKey = "sekretiJuajassssssssssssssssssssssssssssssssssssssssssssssss";
-    private long refreshTokenExpiration = 1000 * 60 * 60 * 24 * 7; // 1 week
+    private long refreshTokenExpiration =  10 * 1000;
 
     public String generateToken(String username) {
         return Jwts.builder()
@@ -31,7 +31,10 @@ public class JwtGenerated {
 
 
     public boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        Date expiration = extractExpiration(token);
+        System.out.println("Expiration date: " + expiration);
+        System.out.println("Current date: " + new Date());
+        return expiration.before(new Date());
     }
 
     private Date extractExpiration(String token) {

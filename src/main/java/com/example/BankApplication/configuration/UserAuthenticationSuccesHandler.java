@@ -37,7 +37,7 @@ public class UserAuthenticationSuccesHandler implements AuthenticationSuccessHan
         Cookie cookie = new Cookie("token", token);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60); // 1 ditë
+        cookie.setMaxAge(10);
         response.addCookie(cookie);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
