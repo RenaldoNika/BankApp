@@ -29,15 +29,15 @@ public class AccountController {
         this.dtoUserContextSpringHolder = dtoUserContextSpringHolder;
     }
 
-    @PostMapping("/deposit/{account}")
-    public ResponseEntity<?> deposit(@PathVariable("account") String account,
+    @PostMapping("/deposit")
+    public String deposit(@RequestParam("account") String account,
                                      @RequestParam("sum") double sum) {
         bankService.deposit(account, sum);
-        return ResponseEntity.ok("ok");
+        return "redirect:/mybank/home";
     }
 
 
-    @PostMapping("/withdraw/{account}")
+    @PostMapping("/withdraw")
     public Account withdraw(@PathVariable String account, @RequestParam("sum") double balance) {
         bankService.withdraw(account, balance);
         return accountService.getAccount(account);
