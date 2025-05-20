@@ -65,28 +65,17 @@ public class HomePageController {
             throw new RuntimeException("Përdoruesi nuk është i autentikuar");
         }
         String username = authentication.getName();
-        User user=userRepository.findByEmail(username).get();
 
-        Cookie[] cookies = request.getCookies();
-        String token = null;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("token".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    break;
-                }
-            }
-        }
-        if (token != null) {
-            System.out.println("Tokeni i përdoruesit nga cookie: " + token);
-        } else {
-            System.out.println("Nuk u gjet token në cookie.");
+        User user = userRepository.findByEmail(username).get();
+
+        List<String> allTransactions = new ArrayList<>();
+
+        for (Account account : user.getAccountList()) {
+            allTransactions.add(account.getAccountNumber());
         }
 
-        System.out.println("Emri i përdoruesit: " + username);
-
+        model.addAttribute("accounts", allTransactions);
         model.addAttribute("username",username);
-        model.addAttribute("account",user.getAccountList().get(0));
         model.addAttribute("balance", bankService.getBalance());
         return "home";
     }
