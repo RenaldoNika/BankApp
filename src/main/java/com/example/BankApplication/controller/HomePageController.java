@@ -42,8 +42,10 @@ public class HomePageController {
 
     @Autowired
     public HomePageController(BankService bankService,
+                              UserRepository userRepository,
                               JwtGenerated jwtGenerated,
                               DtoUserContextSpringHolder dtoUserContextSpringHolder) {
+        this.userRepository=userRepository;
         this.jwtGenerated = jwtGenerated;
         this.bankService = bankService;
         this.dtoUserContextSpringHolder = dtoUserContextSpringHolder;

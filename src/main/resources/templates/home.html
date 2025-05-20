@@ -54,12 +54,11 @@
 <h1>Welcome to MYBANK</h1>
 
 <p>Welcome : <span th:text="${username}"></span></p>
-<tbody>
-<tr th:each="account : ${accoounts}">
-    <td th:text="${account.accountNumber}"></td>
 
-</tr>
-</tbody>
+
+<ul>
+    <li th:each="accountNumber : ${accounts}" th:text="${accountNumber}"></li>
+</ul>
 
 
 <form th:action="@{/mybank/transaction}" method="get">
