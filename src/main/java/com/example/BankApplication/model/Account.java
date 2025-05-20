@@ -28,7 +28,7 @@ public class Account {
 
 
     @JsonIgnore
-    private double balance=500.0;
+    private double balance;
 
     private static final AtomicInteger counter = new AtomicInteger(1000);
 
