@@ -82,6 +82,10 @@ public class HomePageController {
         return "home";
     }
 
+    @GetMapping("/deposit")
+    public String deposit(){
+        return "deposit";
+    }
 
     @PostMapping("/transfero")
     public String transfero() {
@@ -90,10 +94,8 @@ public class HomePageController {
 
     @GetMapping("/transaction")
     private String getTransaction(Model model) {
-
         User user = dtoUserContextSpringHolder.getCurrentUser();
         List<Transaction> allTransactions = new ArrayList<>();
-
         for (Account account : user.getAccountList()) {
             allTransactions.addAll(account.getTransactionList());
         }

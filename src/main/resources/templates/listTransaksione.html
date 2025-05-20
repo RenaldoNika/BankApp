@@ -15,6 +15,7 @@
         <th>Përshkrimi</th>
     </tr>
     </thead>
+
     <tbody>
     <tr th:each="trans : ${transactions}">
         <td th:text="${trans.date}"></td>
@@ -22,6 +23,7 @@
         <td th:text="${trans.type}">Përshkrimi këtu</td>
     </tr>
     </tbody>
+
 </table>
 </body>
 </html>
