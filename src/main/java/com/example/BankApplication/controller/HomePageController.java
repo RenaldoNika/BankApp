@@ -5,6 +5,7 @@ import com.example.BankApplication.model.Account;
 import com.example.BankApplication.model.DtoUserContextSpringHolder;
 import com.example.BankApplication.model.Transaction;
 import com.example.BankApplication.model.User;
+import com.example.BankApplication.repository.UserRepository;
 import com.example.BankApplication.service.BankService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ public class HomePageController {
     private BankService bankService;
     private DtoUserContextSpringHolder dtoUserContextSpringHolder;
     private JwtGenerated jwtGenerated;
+    private UserRepository userRepository;
 
     @ResponseBody
     @GetMapping("/auth/token")
@@ -58,10 +60,12 @@ public class HomePageController {
     @GetMapping("/home")
     public String homePage(Model model, HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new RuntimeException("Përdoruesi nuk është i autentikuar");
         }
         String username = authentication.getName();
+        User user=userRepository.findByEmail(username).get();
 
         Cookie[] cookies = request.getCookies();
         String token = null;
@@ -82,6 +86,7 @@ public class HomePageController {
         System.out.println("Emri i përdoruesit: " + username);
 
         model.addAttribute("username",username);
+        model.addAttribute("account",user.getAccountList().get(0));
         model.addAttribute("balance", bankService.getBalance());
         return "home";
     }
