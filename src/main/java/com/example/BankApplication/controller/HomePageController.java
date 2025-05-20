@@ -82,7 +82,7 @@ public class HomePageController {
         return "home";
     }
 
-    @GetMapping("/deposit")
+    @PostMapping("/deposit")
     public String deposit(){
         return "deposit";
     }
