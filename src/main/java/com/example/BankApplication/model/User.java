@@ -50,7 +50,6 @@ public class User {
         }
     }
 
-
     public Roles getRoles() {
         return roles;
     }

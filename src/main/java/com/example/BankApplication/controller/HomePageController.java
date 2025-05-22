@@ -1,10 +1,7 @@
 package com.example.BankApplication.controller;
 
 import com.example.BankApplication.jwt.JwtGenerated;
-import com.example.BankApplication.model.Account;
-import com.example.BankApplication.model.DtoUserContextSpringHolder;
-import com.example.BankApplication.model.Transaction;
-import com.example.BankApplication.model.User;
+import com.example.BankApplication.model.*;
 import com.example.BankApplication.repository.UserRepository;
 import com.example.BankApplication.service.BankService;
 import jakarta.servlet.http.Cookie;
@@ -15,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +43,7 @@ public class HomePageController {
                               UserRepository userRepository,
                               JwtGenerated jwtGenerated,
                               DtoUserContextSpringHolder dtoUserContextSpringHolder) {
-        this.userRepository=userRepository;
+        this.userRepository = userRepository;
         this.jwtGenerated = jwtGenerated;
         this.bankService = bankService;
         this.dtoUserContextSpringHolder = dtoUserContextSpringHolder;
@@ -77,13 +75,13 @@ public class HomePageController {
         }
 
         model.addAttribute("accounts", allTransactions);
-        model.addAttribute("username",username);
+        model.addAttribute("username", username);
         model.addAttribute("balance", bankService.getBalance());
         return "home";
     }
 
     @PostMapping("/deposit")
-    public String deposit(){
+    public String deposit() {
         return "deposit";
     }
 
@@ -93,7 +91,7 @@ public class HomePageController {
     }
 
     @GetMapping("/transaction")
-    private String getTransaction(Model model) {
+    public String getTransaction(Model model) {
         User user = dtoUserContextSpringHolder.getCurrentUser();
         List<Transaction> allTransactions = new ArrayList<>();
         for (Account account : user.getAccountList()) {
@@ -103,5 +101,17 @@ public class HomePageController {
         return "listTransaksione";
     }
 
-
+    @GetMapping("/bankCard")
+    public String getBankCard(Model model) {
+        User user = dtoUserContextSpringHolder.getCurrentUser();
+       BankCard bankCard= user.getAccountList().get(0).getBankCard();
+//        String formattedExpirationDate = "";
+//        if (bankCard.getExpirationDate() != null) {
+//            formattedExpirationDate = bankCard.getExpirationDate()
+//                    .format(DateTimeFormatter.ofPattern("MM/yyyy"));
+//        }
+        model.addAttribute("bankCard", bankCard);
+//        model.addAttribute("expirationDateFormatted", formattedExpirationDate);
+        return "showBankCredit";
+    }
 }

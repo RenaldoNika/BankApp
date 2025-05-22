@@ -1,10 +1,8 @@
 package com.example.BankApplication.service;
 
+import com.example.BankApplication.configuration.UserAuthenticationSuccesHandler;
 import com.example.BankApplication.exception.AccountException;
-import com.example.BankApplication.model.Account;
-import com.example.BankApplication.model.DtoUserContextSpringHolder;
-import com.example.BankApplication.model.Transaction;
-import com.example.BankApplication.model.User;
+import com.example.BankApplication.model.*;
 import com.example.BankApplication.repository.AccountRepository;
 import com.example.BankApplication.repository.TransactionRepository;
 import com.example.BankApplication.repository.UserRepository;
@@ -13,10 +11,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class BankService {
 
+    private BankCardService bankCardService;
     private AccountRepository accountRepository;
     private TransactionRepository transactionRepository;
     private EmailService emailService;
@@ -26,6 +26,7 @@ public class BankService {
 
     @Autowired
     public BankService(AccountRepository accountRepository,
+                       BankCardService bankCardService,
                        DtoUserContextSpringHolder dtoUserContextSpringHolder,
                        UserRepository userRepository,
                        TransactionRepository transactionRepository,
@@ -67,7 +68,7 @@ public class BankService {
         Transaction transaction = new Transaction();
         transaction.setAccount(account);
         transaction.setAmount(amount);
-        transaction.setType("DEPOSIT");
+        transaction.setType("WITHDRAW");
 
         transaction.setDate(new Date());
 
@@ -78,6 +79,8 @@ public class BankService {
         transactionRepository.save(transaction);
         accountRepository.save(account);
     }
+
+
 
     public void withdraw(String accountNumber, double amount) {
 
@@ -153,6 +156,13 @@ public class BankService {
         Account account = accountRepository.findByAccountNumber(userLogin.getAccountList().get(0).getAccountNumber())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         return account.getBalance();
+    }
+
+    public double getBalanceForShopin(String numberAccount){
+        Account accounts = accountRepository.findByAccountNumber(numberAccount).get();
+
+        return accounts.getBalance();
+
     }
 
     public List<Transaction> getTransactions() {

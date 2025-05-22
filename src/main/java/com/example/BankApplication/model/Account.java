@@ -22,8 +22,10 @@ public class Account {
     @ManyToOne
     private User user;
 
+    @OneToOne(mappedBy = "accountNumber")
+    private BankCard bankCard;
 
-    @JsonIgnore
+
     private String accountNumber;
 
 
@@ -79,4 +81,15 @@ public class Account {
     public User getUser() {
         return user;
     }
+
+    public void setBankCard(BankCard bankCard) {
+        this.bankCard = bankCard;
+    }
+
+    public BankCard getBankCard() {
+        return bankCard;
+    }
+
+
+
 }

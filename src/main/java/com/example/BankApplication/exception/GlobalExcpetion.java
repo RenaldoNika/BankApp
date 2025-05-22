@@ -15,6 +15,11 @@ public class GlobalExcpetion {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    @ExceptionHandler(BankCardException.class)
+    public ResponseEntity<String> bankCardException(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
     @ExceptionHandler(UserException.class)
     @ResponseBody
     public String handleUserException(UserException e) {
