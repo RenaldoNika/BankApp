@@ -31,8 +31,7 @@ public class JwtGenerated {
 
     public boolean isTokenExpired(String token) {
         Date expiration = extractExpiration(token);
-        System.out.println("Expiration date: " + expiration);
-        System.out.println("Current date: " + new Date());
+
         return expiration.before(new Date());
     }
 
