@@ -22,7 +22,7 @@ public class Account {
     @ManyToOne
     private User user;
 
-    @OneToOne(mappedBy = "accountNumber")
+    @OneToOne(mappedBy = "accountNumber",fetch = FetchType.EAGER)
     private BankCard bankCard;
 
 

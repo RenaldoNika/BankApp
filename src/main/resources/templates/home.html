@@ -6,82 +6,158 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
             margin: 0;
             padding: 0;
             height: 100vh;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: flex-start; /* Kthehemi majtas */
+            align-items: center;
+            padding-left: 40px; /* pak hapësirë nga krah majtë */
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1100px;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .left-side {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: #f4f4f9;
+            align-items: flex-start;
+            text-align: left;
         }
-        h1 {
-            font-size: 36px;
+
+        h1, h2 {
             color: #333;
+            margin-bottom: 12px;
         }
-        .balance-container {
-            background-color: #4CAF50;
-            color: white;
-            font-size: 48px;
-            font-weight: bold;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        .welcome-text {
+            font-size: 20px;
+            margin-bottom: 20px;
         }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        ul li {
+            background-color: #e2e8f0;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        form {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
         button {
             background-color: #007BFF;
             color: white;
             border: none;
             padding: 10px 20px;
-            margin: 10px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            max-width: 250px;
+            width: 100%;
         }
+
         button:hover {
             background-color: #0056b3;
         }
-        form {
-            display: inline-block;
-            margin: 10px;
+
+        .right-side {
+            min-width: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-right: 40px;
+        }
+
+        .balance-container {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 100%;
+        }
+
+        .chat-form label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .chat-form input[type="text"] {
+            width: 100%;
+            max-width: 250px;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
 
-<h1>Welcome to MYBANK</h1>
+<div class="container">
+    <div class="left-side">
+        <h1>Welcome to MYBANK</h1>
+        <p class="welcome-text">Welcome : <span th:text="${username}"></span></p>
 
-<p>Welcome : <span th:text="${username}"></span></p>
+        <ul>
+            <li th:each="accountNumber : ${accounts}" th:text="${accountNumber}"></li>
+        </ul>
 
+        <form th:action="@{/mybank/deposit}" method="post">
+            <button type="submit">Deposito</button>
+        </form>
 
-<ul>
-    <li th:each="accountNumber : ${accounts}" th:text="${accountNumber}"></li>
-</ul>
+        <form th:action="@{/mybank/transaction}" method="get">
+            <button type="submit">Shiko Transaksionet</button>
+        </form>
 
+        <form th:action="@{/mybank/bankCard}" method="get">
+            <button type="submit">Shiko te Dhenat e Kartes</button>
+        </form>
 
-<form th:action="@{/mybank/deposit}" method="post">
-    <button type="submit">Deposito</button>
-</form>
+        <form th:action="@{/mybank/transfero}" method="post">
+            <button type="submit">Transfero Para</button>
+        </form>
 
-<form th:action="@{/mybank/transaction}" method="get">
-    <button type="submit">Shiko Transaksionet</button>
-</form>
+        <h2>Fillo chat me një përdorues</h2>
+        <form class="chat-form" th:action="@{/mybank/start/chat}" method="get">
+            <label for="username">Enter username:</label>
+            <input type="text" id="username" name="username" required>
+            <button type="submit">Start Chat</button>
+        </form>
+    </div>
 
-
-<form th:action="@{/mybank/bankCard}" method="get">
-    <button type="submit">Shiko te Dhenat e Kartes</button>
-</form>
-
-<form th:action="@{/mybank/transfero}" method="post">
-    <button type="submit">Transfero Para</button>
-</form>
-
-<h1>Balanca e Bankës</h1>
-
-<div class="balance-container">
-    <strong th:text="${balance}">0.00</strong> EUR
+    <div class="right-side">
+        <h1>Balanca e Bankës</h1>
+        <div class="balance-container">
+            <strong th:text="${balance}">0.00</strong> EUR
+        </div>
+    </div>
 </div>
 
 </body>

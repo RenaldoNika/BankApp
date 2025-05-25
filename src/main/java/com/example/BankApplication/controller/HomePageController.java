@@ -4,7 +4,6 @@ import com.example.BankApplication.jwt.JwtGenerated;
 import com.example.BankApplication.model.*;
 import com.example.BankApplication.repository.UserRepository;
 import com.example.BankApplication.service.BankService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -12,7 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,5 +111,10 @@ public class HomePageController {
         model.addAttribute("bankCard", bankCard);
 //        model.addAttribute("expirationDateFormatted", formattedExpirationDate);
         return "showBankCredit";
+    }
+
+    @GetMapping("/start/chat")
+    public String startChat(@RequestParam("username") String username) {
+        return "redirect:/talk/chats/" + username;
     }
 }
