@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Private Chat</title>
+</head>
+<body>
+<h2>Chat me <span th:text="${recipient}">përdoruesin</span></h2>
+
+<div style="border:1px solid gray; padding:10px; height:300px; overflow:auto;">
+  <div th:each="msg : ${messages}">
+    <p>
+      <b th:text="${msg.sender}"></b>:
+      <span th:text="${msg.content}"></span>
+      <i th:text="${msg.formattedTimestamp}"></i>
+    </p>
+  </div>
+</div>
+
+<form th:action="@{'/talk/chatprivat/' + ${recipient}}" method="post" th:object="${newMessage}">
+  <input type="text" th:field="*{content}" placeholder="Shkruaj mesazhin" required>
+  <button type="submit">Dërgo</button>
+</form>
+
+</body>
+</html>

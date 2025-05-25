@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Të Dhënat e Kartës Bankare</title>
+</head>
+<body>
+<h2>Të Dhënat e Kartës Bankare</h2>
+
+<div th:object="${bankCard}">
+  <p>Numri i Kartës: <span th:text="*{cardNumber}"></span></p>
+  <p>Data e Skadencës: <span th:text="${expirationDateFormatted}"></span></p>
+  <p>CVV: <span th:text="*{cvv}"></span></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/bankCard/add}" th:object="${bankCard}" method="post">
+  <label>Card Number:</label>
+  <input type="text" th:field="*{cardNumber}" /><br>
+
+  <label>Card Holder Name:</label>
+  <input type="text" th:field="*{cardHolderName}" /><br>
+
+  <label>Expiration Date (YYYY-MM):</label>
+  <input type="text" th:field="*{expirationDate}" /><br>
+
+  <label>CVV:</label>
+  <input type="text" th:field="*{cvv}" /><br>
+
+  <label>Account Number:</label>
+  <input type="text" th:field="*{accountNumber}" /><br>
+
+  <button type="submit">Submit</button>
+</form>
+
+<p th:text="${message}" style="color:green"></p>
+
+</body>
+</html>
