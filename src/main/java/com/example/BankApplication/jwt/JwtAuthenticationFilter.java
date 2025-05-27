@@ -8,11 +8,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -25,7 +26,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
+
         String token = null;
 
         Cookie[] cookies = request.getCookies();
@@ -36,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     break;
                 }
             }
-        }else {
+        } else {
             System.out.println("Nuk ka cookie.");
         }
         System.out.println("Cookies: " + Arrays.toString(request.getCookies()));
@@ -55,6 +58,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 String username = jwtUtil.extractUsername(token);
 
+                System.out.println("Authentication para setAutentikation: " + SecurityContextHolder.getContext().getAuthentication());
+
+
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     if (jwtUtil.validateToken(token, username)) {
 
@@ -63,12 +69,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 new UsernamePasswordAuthenticationToken(username,
                                         null, new ArrayList<>());
 
-//                        authentication.setDetails(
-//                                new WebAuthenticationDetailsSource().buildDetails(request));
-//
-//                        System.out.println("Detaje nga autetikimi "+authentication.getDetails());
+
                         SecurityContextHolder.getContext().setAuthentication(authentication);
-                        System.out.println("User authenticated: " + username);
+                        System.out.println("Pas setAuthentication: " + SecurityContextHolder.getContext().getAuthentication());
                     } else {
                         SecurityContextHolder.clearContext();
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
