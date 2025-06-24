@@ -46,6 +46,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/mybank/auth/token").authenticated()
                         .requestMatchers("/mybank/**").authenticated()
                         .requestMatchers("/talk/**").authenticated()
+                        .requestMatchers("/login").permitAll()
                         .requestMatchers("/mybank/some-endpoint").permitAll()
                         .anyRequest().authenticated()
                 )

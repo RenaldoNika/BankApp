@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 
 @Component
@@ -37,10 +38,13 @@ public class UserAuthenticationSuccesHandler implements AuthenticationSuccessHan
         Cookie cookie = new Cookie("token", token);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setMaxAge(1000);
+        cookie.setMaxAge(100000);
         response.addCookie(cookie);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+
+
         for (GrantedAuthority authority : authorities) {
             if ("ROLE_USER".equals(authority.getAuthority())) {
                 response.sendRedirect("/mybank/home");

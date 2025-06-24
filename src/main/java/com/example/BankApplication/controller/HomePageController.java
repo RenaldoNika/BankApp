@@ -47,12 +47,6 @@ public class HomePageController {
         this.dtoUserContextSpringHolder = dtoUserContextSpringHolder;
     }
 
-    @PostMapping("/some-endpoint")
-    @ResponseBody
-    public String getRequestHeaders(@RequestBody String requestBody, HttpServletRequest request) {
-        String contentType = request.getHeader("Accept");
-        return "Content-Type: " + contentType + ", Body: " + requestBody;
-    }
 
 
     @GetMapping("/home")

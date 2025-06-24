@@ -1,9 +1,10 @@
 package com.example.BankApplication.service;
 
-import com.example.BankApplication.configuration.UserAuthenticationSuccesHandler;
 import com.example.BankApplication.exception.AccountException;
+import com.example.BankApplication.exception.BankCardException;
 import com.example.BankApplication.model.*;
 import com.example.BankApplication.repository.AccountRepository;
+import com.example.BankApplication.repository.BankCardRepository;
 import com.example.BankApplication.repository.TransactionRepository;
 import com.example.BankApplication.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class BankService {
@@ -22,10 +22,12 @@ public class BankService {
     private EmailService emailService;
     private UserRepository userRepository;
     private DtoUserContextSpringHolder dtoUserContextSpringHolder;
+    private BankCardRepository bankCardRepository;
 
 
     @Autowired
     public BankService(AccountRepository accountRepository,
+                       BankCardRepository bankCardRepository,
                        BankCardService bankCardService,
                        DtoUserContextSpringHolder dtoUserContextSpringHolder,
                        UserRepository userRepository,
@@ -36,6 +38,7 @@ public class BankService {
         this.transactionRepository = transactionRepository;
         this.userRepository = userRepository;
         this.dtoUserContextSpringHolder = dtoUserContextSpringHolder;
+        this.bankCardRepository = bankCardRepository;
     }
 
     public Account createAccount(String accountNumber) {
@@ -81,7 +84,6 @@ public class BankService {
     }
 
 
-
     public void withdraw(String accountNumber, double amount) {
 
         User userFrom = dtoUserContextSpringHolder.getCurrentUser();
@@ -110,6 +112,49 @@ public class BankService {
         accountRepository.save(account);
     }
 
+    public void trasnferToShop(String shopAccountnumber,
+                               String cvv,
+                               String cardNumber,
+                               String expirationDate,
+                               double amount) {
+
+
+        BankCard bankCard = bankCardRepository.findByCvvAndCardNumberAndExpirationDate(
+                cvv,
+                cardNumber,
+                expirationDate).orElseThrow(() -> new BankCardException("gabim ne karte"));
+
+        String accountNumberBuy = bankCard.getAccountNumber().getAccountNumber();
+
+
+        Account accountUser = accountRepository.findByAccountNumber(accountNumberBuy).orElseThrow(
+                () -> new AccountException("nuk egziston"));
+
+
+        Account shopAccount = accountRepository.findByAccountNumber(shopAccountnumber)
+                .orElseThrow(() -> new AccountException("To Account not found"));
+
+        accountUser.setBalance(accountUser.getBalance() - amount);
+
+        shopAccount.setBalance(shopAccount.getBalance() + amount);
+
+        Transaction transaction = new Transaction();
+        transaction.setAmount(amount);
+        transaction.setDate(new Date());
+        transaction.setType("online");
+        transaction.setAccount(accountUser);
+        transactionRepository.save(transaction);
+
+        Transaction transactionShop = new Transaction();
+        transactionShop.setAmount(amount);
+        transactionShop.setDate(new Date());
+        transactionShop.setType("online");
+        transactionShop.setAccount(shopAccount);
+        transactionRepository.save(transactionShop);
+
+
+    }
+
     public void transfer(String toAccountNumber, double amount) {
 
         User userFrom = dtoUserContextSpringHolder.getCurrentUser();
@@ -127,7 +172,7 @@ public class BankService {
         Transaction withdrawalTransaction = new Transaction();
         withdrawalTransaction.setAccount(accountFrom);
         withdrawalTransaction.setAmount(amount);
-        withdrawalTransaction.setType("Transfer "+" TO: "+toAccountNumber);
+        withdrawalTransaction.setType("Transfer " + " TO: " + toAccountNumber);
         withdrawalTransaction.setDate(new Date());
         transactionRepository.save(withdrawalTransaction);
 
@@ -158,7 +203,7 @@ public class BankService {
         return account.getBalance();
     }
 
-    public double getBalanceForShopin(String numberAccount){
+    public double getBalanceForShopin(String numberAccount) {
         Account accounts = accountRepository.findByAccountNumber(numberAccount).get();
 
         return accounts.getBalance();

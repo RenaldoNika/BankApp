@@ -3,14 +3,13 @@ package com.example.BankApplication.jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
 
 @Component
 public class JwtGenerated {
 
     private String secretKey = "sekretiJuajassssssssssssssssssssssssssssssssssssssssssssssss";
-    private long refreshTokenExpiration = 10 * 1000 * 100;
+    private long refreshTokenExpiration = 1000 * 60*6000;
 
     public String generateToken(String username) {
         return Jwts.builder()
@@ -19,14 +18,6 @@ public class JwtGenerated {
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
-    }
-
-    public static void main(String[] args) {
-        JwtGenerated jwtGenerated = new JwtGenerated();
-        String token = jwtGenerated.generateToken("reno");
-        System.out.println(token);
-
-        System.out.println(jwtGenerated.extractExpiration(token));
     }
 
     public String extractUsername(String token) {

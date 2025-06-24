@@ -15,7 +15,7 @@ public class JwtClass {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 100 * 10))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 100 * 10000))
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
@@ -49,15 +49,7 @@ public class JwtClass {
 
     }
 
-    public static void main(String[] args) {
-        JwtClass jwtClass=new JwtClass();
 
-        String token=jwtClass.gjeneroToken("reno");
-
-
-       System.out.println(jwtClass.expired(token));
-
-    }
 
 
 }
