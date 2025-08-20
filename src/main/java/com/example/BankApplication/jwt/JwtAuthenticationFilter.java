@@ -5,18 +5,25 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtGenerated jwtUtil;
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+
 
     @Autowired
     public JwtAuthenticationFilter(JwtGenerated jwtUtil) {
@@ -28,8 +35,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        logger.info("JWT Filter triggered for URI: {}", request.getRequestURI());
+        System.out.println("U THERRIT ");
 
         String path = request.getRequestURI();
+        System.out.println("------------- "+path);
+
         if (path.equals("/login")) {
             filterChain.doFilter(request, response);
             return;
@@ -45,6 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     break;
                 }
             }
+            System.out.println("ka cookie !");
         } else {
             System.out.println("Nuk ka cookie.");
         }
@@ -87,9 +99,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
 
             } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
+                System.out.println("Token i pavlefshem: " + e.getMessage());
+                SecurityContextHolder.clearContext();
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Error during token verification: " + e.getMessage());
+                response.getWriter().write("Token i pavlfshem " + e.getMessage());
                 return;
             }
         }

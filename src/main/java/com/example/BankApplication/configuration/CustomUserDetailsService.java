@@ -20,12 +20,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
         Optional<User> userOptional = userRepository.findByEmail(email);
 
         User user = userOptional.orElseThrow(() ->
                 new UsernameNotFoundException("Perdoruesi nuk ekziston"));
 
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())

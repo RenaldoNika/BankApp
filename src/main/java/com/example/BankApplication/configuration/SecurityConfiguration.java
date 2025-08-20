@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -19,18 +20,23 @@ public class SecurityConfiguration {
     private final UserAuthenticationSuccesHandler userAuthenticationSuccesHandler;
     private final JwtGenerated jwtGenerated;
     private final CustomUserDetailsService customUserDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
     public SecurityConfiguration(UserAuthenticationSuccesHandler userAuthenticationSuccesHandler,
                                  JwtGenerated jwtGenerated,
+                                 JwtAuthenticationFilter jwtAuthenticationFilter,
                                  CustomUserDetailsService customUserDetailsService) {
         this.userAuthenticationSuccesHandler = userAuthenticationSuccesHandler;
         this.jwtGenerated = jwtGenerated;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        System.out.println("Security config loaded");
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
@@ -38,28 +44,20 @@ public class SecurityConfiguration {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/mybank/home/**").authenticated()
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/accounts/check").permitAll()
-                        .requestMatchers("/bankCard/addCard").permitAll()
-                        .requestMatchers("/bankCard/add").permitAll()
-                        .requestMatchers("/bankCard/**").permitAll()
-                        .requestMatchers("/mybank/auth/token").authenticated()
-                        .requestMatchers("/mybank/**").authenticated()
-                        .requestMatchers("/talk/**").authenticated()
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/mybank/some-endpoint").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
+                );
+        http.addFilterBefore(jwtAuthenticationFilter,
+                org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
+
+
+                http.formLogin(form -> form
                         .successHandler(userAuthenticationSuccesHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout.permitAll())
                 .userDetailsService(customUserDetailsService);
-
-
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtGenerated),
-                org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

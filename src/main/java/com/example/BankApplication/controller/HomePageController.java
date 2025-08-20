@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,6 @@ public class HomePageController {
         this.bankService = bankService;
         this.dtoUserContextSpringHolder = dtoUserContextSpringHolder;
     }
-
 
 
     @GetMapping("/home")
@@ -96,14 +96,16 @@ public class HomePageController {
     @GetMapping("/bankCard")
     public String getBankCard(Model model) {
         User user = dtoUserContextSpringHolder.getCurrentUser();
-       BankCard bankCard= user.getAccountList().get(0).getBankCard();
-//        String formattedExpirationDate = "";
-//        if (bankCard.getExpirationDate() != null) {
-//            formattedExpirationDate = bankCard.getExpirationDate()
-//                    .format(DateTimeFormatter.ofPattern("MM/yyyy"));
-//        }
+
+        BankCard bankCard = user.getAccountList().get(0).getBankCard();
+
+        if (bankCard == null) {
+            model.addAttribute("errorMessage", "Nuk u gjet kartë bankare për këtë llogari.");
+            return "errorBankCard";
+        }
+
+
         model.addAttribute("bankCard", bankCard);
-//        model.addAttribute("expirationDateFormatted", formattedExpirationDate);
         return "showBankCredit";
     }
 

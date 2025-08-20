@@ -134,25 +134,27 @@ public class BankService {
         Account shopAccount = accountRepository.findByAccountNumber(shopAccountnumber)
                 .orElseThrow(() -> new AccountException("To Account not found"));
 
-        accountUser.setBalance(accountUser.getBalance() - amount);
+        if (accountUser.getBalance()<amount){
+            throw new BankCardException("fonde te pa mjaftushme");
+        }else {
+            accountUser.setBalance(accountUser.getBalance() - amount);
 
-        shopAccount.setBalance(shopAccount.getBalance() + amount);
+            shopAccount.setBalance(shopAccount.getBalance() + amount);
 
-        Transaction transaction = new Transaction();
-        transaction.setAmount(amount);
-        transaction.setDate(new Date());
-        transaction.setType("online");
-        transaction.setAccount(accountUser);
-        transactionRepository.save(transaction);
+            Transaction transaction = new Transaction();
+            transaction.setAmount(amount);
+            transaction.setDate(new Date());
+            transaction.setType("online");
+            transaction.setAccount(accountUser);
+            transactionRepository.save(transaction);
 
-        Transaction transactionShop = new Transaction();
-        transactionShop.setAmount(amount);
-        transactionShop.setDate(new Date());
-        transactionShop.setType("online");
-        transactionShop.setAccount(shopAccount);
-        transactionRepository.save(transactionShop);
-
-
+            Transaction transactionShop = new Transaction();
+            transactionShop.setAmount(amount);
+            transactionShop.setDate(new Date());
+            transactionShop.setType("online");
+            transactionShop.setAccount(shopAccount);
+            transactionRepository.save(transactionShop);
+        }
     }
 
     public void transfer(String toAccountNumber, double amount) {
