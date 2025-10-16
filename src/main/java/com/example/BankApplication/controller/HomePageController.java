@@ -73,7 +73,8 @@ public class HomePageController {
     }
 
     @PostMapping("/deposit")
-    public String deposit() {
+    public String deposit()
+    {
         return "deposit";
     }
 

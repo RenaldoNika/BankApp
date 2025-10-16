@@ -35,8 +35,10 @@ public class AccountController {
 
     @PostMapping("/deposit")
     public String deposit(@RequestParam("account") String account,
+                          @RequestHeader ("Authentication")String accept,
                           @RequestParam("sum") double sum) {
         bankService.deposit(account, sum);
+        System.out.println("print accept "+accept);
         return "redirect:/mybank/home";
     }
 
